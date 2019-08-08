@@ -21,5 +21,7 @@ See also:
 
 Options:
 
+```
   -c PROC_NAME_REGEX  Manage processes having this name (regex)
   -g PROC_GID         Manage processes having this GID (can be supplied multiple times)
+```
