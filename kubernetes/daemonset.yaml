@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: tasksetd
+  namespace: kube-system
+  labels:
+    app: tasksetd
+spec:
+  selector:
+    matchLabels:
+      app: tasksetd
+  template:
+    metadata:
+      labels:
+        app: tasksetd
+    spec:
+      serviceAccountName: tasksetd
+
+      hostPID: true
+      terminationGracePeriodSeconds: 0
+      
+      containers:
+      - name: tasksetd
+        image: drdivano/tasksetd@sha256:0ec75dedb5061cbaf2411bb3971b1670ddc12082c84c74d431f1816750d4a76c
+
+        # 61000 - supplemental group for processes managed by tasksetd
+        args: ["python3", "/tasksetd.py", "-g", "61000"]
+        
+        resources:
+          requests:
+            memory: 30Mi
+            cpu: 30m
+          limits:
+            memory: 300Mi
+            cpu: 100m
+            
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["KILL", "CHOWN", "DAC_OVERRIDE", "FOWNER", "FSETID", "SETGID", "SETUID", "SETPCAP", "NET_BIND_SERVICE", "NET_RAW", "SYS_CHROOT", "MKNOD", "AUDIT_WRITE", "SETFCAP"]
+            add: ["SYS_NICE"]
+ 

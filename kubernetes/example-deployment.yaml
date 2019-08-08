@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example
+
+spec:
+  selector:
+    matchLabels:
+      app: example
+
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      securityContext:
+        supplementalGroups: [61000]  # tells tasksetd to manage this process
+        
+      containers:
+      - name: example
+        image: busybox
+        command:
+          - sh
+          - -c
+          - while true; do grep Cpus_allowed_list /proc/1/status; sleep 5; done

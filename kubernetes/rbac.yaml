@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tasksetd
+  namespace: kube-system
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tasksetd
+  namespace: kube-system
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - tasksetd
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tasksetd
+  namespace: kube-system
+subjects:
+- kind: ServiceAccount
+  name: tasksetd
+roleRef:
+  kind: Role
+  name: tasksetd
+  apiGroup: rbac.authorization.k8s.io
